@@ -1,0 +1,66 @@
+<view class="page session-page">
+  <view class="session-header panel">
+    <view>
+      <view class="session-title">{{scenarioName}} · {{roleName}}</view>
+      <view class="tiny muted">{{difficultyName}} · {{roundLabel}}</view>
+    </view>
+    <view class="mode-pill">{{useDemoMode ? '演示' : 'AI'}}</view>
+  </view>
+
+  <view class="progress-card">
+    <view class="progress-head">
+      <view class="progress-title">训练进度</view>
+      <view class="progress-num">{{progressPercent}}%</view>
+    </view>
+    <view class="progress-track">
+      <view class="progress-bar" style="width: {{progressPercent}}%;"></view>
+    </view>
+    <view class="coach-tip">{{coachTip}}</view>
+    <view class="voice-row">
+      <view>
+        <view class="voice-title">AI 考官语音 · 听力播音</view>
+        <view class="voice-sub">真实 AI 模式使用清晰匀速的考试听力风格</view>
+      </view>
+      <switch checked="{{voiceEnabled}}" color="#5eead4" bindchange="toggleVoice"></switch>
+    </view>
+    <view class="voice-row mixed-row">
+      <view>
+        <view class="voice-title">中英混说辅助</view>
+        <view class="voice-sub">卡壳时可以说中文，系统会先整理成自然英文</view>
+      </view>
+      <switch checked="{{mixedLanguageAssist}}" color="#5eead4" bindchange="toggleMixedAssist"></switch>
+    </view>
+  </view>
+
+  <scroll-view class="message-list" scroll-y="true" scroll-into-view="{{scrollAnchor}}">
+    <view wx:for="{{history}}" wx:key="id" id="msg-{{item.id}}" class="message {{item.role}}">
+      <view class="speaker-row">
+        <view class="speaker">{{item.role == 'assistant' ? 'AI 考官' : '我'}}</view>
+        <button wx:if="{{item.role == 'assistant'}}" class="listen-btn" data-id="{{item.id}}" bindtap="playMessageAudio">{{isPlaying && playingMessageId == item.id ? '播放中' : '重听'}}</button>
+      </view>
+      <view class="bubble">{{item.originalText ? item.originalText : item.text}}</view>
+      <view wx:if="{{item.normalizedText}}" class="normalize-card">
+        <view class="normalize-label">已整理英文</view>
+        <view class="normalize-main">{{item.normalizedText}}</view>
+      </view>
+      <view wx:if="{{item.feedback}}" class="feedback">
+        <view class="feedback-label">即时反馈</view>
+        <view class="feedback-text">{{item.feedback}}</view>
+      </view>
+    </view>
+    <view id="bottom-anchor" class="bottom-anchor"></view>
+  </scroll-view>
+
+  <view class="composer panel">
+    <textarea class="answer-input" value="{{draftAnswer}}" maxlength="900" auto-height placeholder="中文、英文或中英混说都可以" bindinput="onDraftInput"></textarea>
+    <button class="sample-btn" bindtap="fillSampleAnswer">试试中英混说示范</button>
+    <view class="composer-actions">
+      <button wx:if="{{!isRecording}}" class="secondary-btn half-btn" bindtap="startRecording" loading="{{isLoading}}">录音</button>
+      <button wx:else class="secondary-btn half-btn recording" bindtap="stopRecording">停止</button>
+      <button class="primary-btn half-btn" bindtap="submitText" loading="{{isLoading}}">提交</button>
+    </view>
+    <view wx:if="{{normalizeTip}}" class="normalize-tip">{{normalizeTip}}</view>
+    <view wx:if="{{recordTip}}" class="record-tip">{{recordTip}}</view>
+    <button class="quiet-btn finish-btn" bindtap="finishSession" loading="{{isFinishing}}">生成报告</button>
+  </view>
+</view>

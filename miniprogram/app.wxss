@@ -1,0 +1,139 @@
+page {
+  min-height: 100%;
+  background: #f3f7fa;
+  color: #102a43;
+  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+view,
+text,
+button,
+textarea {
+  box-sizing: border-box;
+}
+
+button {
+  margin: 0;
+}
+
+button::after {
+  border: 0;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 28rpx 28rpx 44rpx;
+}
+
+.section {
+  margin-bottom: 28rpx;
+}
+
+.panel {
+  padding: 26rpx;
+  border: 1rpx solid #dce7ef;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(15, 76, 117, 0.055);
+}
+
+.title {
+  color: #ffffff;
+  font-size: 48rpx;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.subtitle {
+  margin-top: 14rpx;
+  color: #d8edf5;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.label {
+  margin-bottom: 16rpx;
+  color: #243b53;
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.chip {
+  min-height: 80rpx;
+  padding: 20rpx 24rpx;
+  border: 1rpx solid #cbd9e4;
+  border-radius: 14rpx;
+  background: #ffffff;
+  color: #334e68;
+  font-size: 26rpx;
+  line-height: 1.35;
+}
+
+.chip.active {
+  border-color: #0b79a6;
+  background: #e8f5fb;
+  color: #075985;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1rpx rgba(3, 105, 161, 0.08);
+}
+
+.primary-btn,
+.secondary-btn,
+.quiet-btn {
+  width: 100%;
+  min-height: 96rpx;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 96rpx;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.primary-btn {
+  color: #ffffff;
+  background: linear-gradient(135deg, #0369a1 0%, #0891b2 100%);
+  box-shadow: 0 12rpx 26rpx rgba(3, 105, 161, 0.2);
+}
+
+.secondary-btn {
+  border: 1rpx solid #b9dbe9;
+  background: #eaf6fb;
+  color: #075985;
+}
+
+.quiet-btn {
+  border: 1rpx solid #dce7ef;
+  background: #edf3f7;
+  color: #486581;
+}
+
+.primary-btn:active,
+.secondary-btn:active,
+.quiet-btn:active,
+.chip:active {
+  opacity: 0.82;
+  transform: scale(0.985);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.muted {
+  color: #627d98;
+}
+
+.tiny {
+  font-size: 22rpx;
+  line-height: 1.5;
+}

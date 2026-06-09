@@ -1,0 +1,87 @@
+<view class="page home-page">
+  <view class="section hero">
+    <view class="brand-row">
+      <view class="brand-mark">
+        <view class="brand-character">职</view>
+        <view class="brand-mouth">
+          <view class="mouth-line"></view>
+        </view>
+      </view>
+      <view>
+        <view class="brand-name">职语 Coach</view>
+        <view class="brand-sub">AI English Coach for Work</view>
+      </view>
+    </view>
+    <view class="title">今天开口，明天敢说</view>
+    <view class="subtitle">为中国职场人设计的英文面试、会议发言和自我介绍陪练。</view>
+    <view class="hero-metrics">
+      <view class="metric">
+        <view class="metric-value">3</view>
+        <view class="metric-label">轮追问</view>
+      </view>
+      <view class="metric">
+        <view class="metric-value">8min</view>
+        <view class="metric-label">一次练习</view>
+      </view>
+      <view class="metric">
+        <view class="metric-value">1</view>
+        <view class="metric-label">份报告</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="label">选择今天的练习</view>
+    <view class="scenario-list">
+      <view wx:for="{{scenarios}}" wx:key="key" class="scenario-card {{item.selectedClass}}" data-key="{{item.key}}" bindtap="chooseScenario">
+        <view class="scenario-head">
+          <view class="scenario-name">{{item.name}}</view>
+          <view class="scenario-tag">{{item.tag}}</view>
+        </view>
+        <view class="scenario-desc">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section panel">
+    <view class="label">目标岗位</view>
+    <view class="chips">
+      <view wx:for="{{roles}}" wx:key="key" class="chip {{item.selectedClass}}" data-key="{{item.key}}" bindtap="chooseRole">{{item.name}}</view>
+    </view>
+  </view>
+
+  <view class="section panel">
+    <view class="label">考官风格</view>
+    <view class="chips">
+      <view wx:for="{{difficulties}}" wx:key="key" class="chip {{item.selectedClass}}" data-key="{{item.key}}" bindtap="chooseDifficulty">{{item.name}}</view>
+    </view>
+  </view>
+
+  <view class="section panel">
+    <view class="row">
+      <view>
+        <view class="label mode-label">演示模式</view>
+        <view class="tiny muted">关闭后会请求本地 AI 后端</view>
+      </view>
+      <switch checked="{{useDemoMode}}" color="#0891b2" bindchange="toggleMode"></switch>
+    </view>
+  </view>
+
+  <view class="section panel">
+    <view class="row">
+      <view>
+        <view class="label mode-label">AI 考官语音</view>
+        <view class="tiny muted">真实 AI 模式采用清晰、匀速的听力播音风格</view>
+      </view>
+      <switch checked="{{voiceEnabled}}" color="#0891b2" bindchange="toggleVoice"></switch>
+    </view>
+  </view>
+
+  <view class="section plan-card">
+    <view class="plan-title">本次训练</view>
+    <view class="plan-line">{{selectedScenarioName}} · {{selectedRoleName}} · {{selectedDifficultyName}}</view>
+    <view class="plan-tip">完成后会得到评分、改进建议和可直接背诵的升级表达。</view>
+  </view>
+
+  <button class="primary-btn" bindtap="startSession">开始陪练</button>
+</view>

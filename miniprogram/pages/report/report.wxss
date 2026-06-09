@@ -1,0 +1,148 @@
+.report-hero {
+  margin-top: 4rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(145deg, #0b3558 0%, #075985 60%, #0b819c 100%);
+  color: #ffffff;
+  box-shadow: 0 14rpx 32rpx rgba(9, 54, 86, 0.17);
+}
+
+.report-badge {
+  display: inline-block;
+  margin-bottom: 18rpx;
+  padding: 8rpx 14rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbeaf2;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.report-title {
+  color: #ffffff;
+  font-size: 38rpx;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.report-hero .subtitle {
+  color: #d8edf5;
+}
+
+.score-row {
+  margin-bottom: 22rpx;
+}
+
+.score-row:last-child {
+  margin-bottom: 0;
+}
+
+.score-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+  color: #334e68;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.score-track {
+  width: 100%;
+  height: 14rpx;
+  overflow: hidden;
+  border-radius: 999rpx;
+  background: #e5edf3;
+}
+
+.score-bar {
+  height: 14rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #0369a1 0%, #14b8a6 100%);
+}
+
+.insight-card {
+  padding: 26rpx;
+  border: 1rpx solid #f3d49a;
+  border-radius: 16rpx;
+  background: #fff9ed;
+}
+
+.insight-label {
+  color: #a15c07;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.insight-text {
+  margin-top: 10rpx;
+  color: #704214;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.list-item {
+  position: relative;
+  margin-bottom: 16rpx;
+  padding: 2rpx 0 2rpx 24rpx;
+  color: #334e68;
+  font-size: 26rpx;
+  line-height: 1.55;
+}
+
+.list-item::before {
+  content: "";
+  position: absolute;
+  top: 16rpx;
+  left: 0;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #0891b2;
+}
+
+.strengths-panel .list-item::before {
+  background: #0f766e;
+}
+
+.upgrade-card {
+  margin-bottom: 18rpx;
+  padding: 20rpx;
+  border: 1rpx solid #dce7ef;
+  border-radius: 14rpx;
+  background: #f7fafc;
+}
+
+.upgrade-card:last-child {
+  margin-bottom: 0;
+}
+
+.sentence {
+  margin-top: 6rpx;
+  font-size: 26rpx;
+  line-height: 1.55;
+}
+
+.before {
+  color: #627d98;
+}
+
+.after-label {
+  margin-top: 16rpx;
+  color: #0f766e;
+}
+
+.after {
+  color: #134e4a;
+  font-weight: 700;
+}
+
+.portfolio-note {
+  color: #334e68;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.back-btn {
+  margin-top: 16rpx;
+}

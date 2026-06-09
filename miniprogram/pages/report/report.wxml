@@ -1,0 +1,53 @@
+<view class="page report-page">
+  <view class="section report-hero">
+    <view class="report-badge">职语 Coach Report</view>
+    <view class="report-title">{{report.title}}</view>
+    <view class="subtitle">{{report.summary}}</view>
+  </view>
+
+  <view class="section panel">
+    <view class="label">能力评分</view>
+    <view wx:for="{{report.scores}}" wx:key="name" class="score-row">
+      <view class="score-head">
+        <text>{{item.name}}</text>
+        <text>{{item.value}}</text>
+      </view>
+      <view class="score-track">
+        <view class="score-bar" style="width: {{item.value}}%;"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section insight-card">
+    <view class="insight-label">本次核心建议</view>
+    <view class="insight-text">下一次回答时，用一句结论开头，再给一个项目例子，最后补充结果。这样更像真实职场表达。</view>
+  </view>
+
+  <view class="section panel strengths-panel">
+    <view class="label">做得好的地方</view>
+    <view wx:for="{{report.strengths}}" wx:key="*this" class="list-item">{{item}}</view>
+  </view>
+
+  <view class="section panel">
+    <view class="label">下一步提升</view>
+    <view wx:for="{{report.improvements}}" wx:key="*this" class="list-item">{{item}}</view>
+  </view>
+
+  <view class="section panel">
+    <view class="label">表达升级</view>
+    <view wx:for="{{report.upgradedSentences}}" wx:key="before" class="upgrade-card">
+      <view class="tiny muted">原句</view>
+      <view class="sentence before">{{item.before}}</view>
+      <view class="tiny muted after-label">更自然</view>
+      <view class="sentence after">{{item.after}}</view>
+    </view>
+  </view>
+
+  <view class="section panel">
+    <view class="label">作品集摘要</view>
+    <view class="portfolio-note">{{report.portfolioNote}}</view>
+  </view>
+
+  <button class="primary-btn" bindtap="copyPortfolio">复制作品集摘要</button>
+  <button class="quiet-btn back-btn" bindtap="backHome">再练一次</button>
+</view>

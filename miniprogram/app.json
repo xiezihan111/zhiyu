@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/session/session",
+    "pages/report/report"
+  ],
+  "window": {
+    "navigationBarTitleText": "职语 Coach",
+    "navigationBarBackgroundColor": "#f3f7fa",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f7faff"
+  },
+  "style": "v2",
+  "permission": {
+    "scope.record": {
+      "desc": "用于录制你的英语口语回答，生成转写、纠错和陪练反馈"
+    }
+  },
+  "sitemapLocation": "sitemap.json"
+}

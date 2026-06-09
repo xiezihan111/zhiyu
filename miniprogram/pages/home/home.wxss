@@ -1,0 +1,221 @@
+.home-page {
+  padding-top: 24rpx;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 30rpx 28rpx 28rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(145deg, #0b3558 0%, #075985 56%, #0b819c 100%);
+  box-shadow: 0 16rpx 36rpx rgba(9, 54, 86, 0.18);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -70rpx;
+  bottom: -100rpx;
+  width: 250rpx;
+  height: 250rpx;
+  border: 42rpx solid rgba(255, 255, 255, 0.07);
+  border-radius: 50%;
+}
+
+.brand-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  margin-bottom: 34rpx;
+}
+
+.brand-mark {
+  position: relative;
+  width: 72rpx;
+  height: 72rpx;
+  overflow: hidden;
+  border: 1rpx solid rgba(255, 255, 255, 0.38);
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.24);
+}
+
+.brand-character {
+  position: absolute;
+  top: 6rpx;
+  left: 0;
+  width: 72rpx;
+  font-size: 32rpx;
+  font-weight: 800;
+  line-height: 44rpx;
+  text-align: center;
+}
+
+.brand-mouth {
+  position: absolute;
+  left: 19rpx;
+  bottom: 11rpx;
+  width: 34rpx;
+  height: 15rpx;
+  border: 3rpx solid rgba(255, 255, 255, 0.96);
+  border-top: 0;
+  border-radius: 0 0 20rpx 20rpx;
+}
+
+.mouth-line {
+  width: 100%;
+  height: 100%;
+}
+
+.brand-mouth::after {
+  content: "";
+  position: absolute;
+  right: -7rpx;
+  bottom: -5rpx;
+  width: 9rpx;
+  height: 9rpx;
+  border-right: 3rpx solid rgba(255, 255, 255, 0.96);
+  transform: rotate(25deg);
+}
+
+.brand-name {
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.brand-sub {
+  margin-top: 4rpx;
+  color: #bde7f2;
+  font-size: 22rpx;
+}
+
+.hero .title,
+.hero .subtitle,
+.hero-metrics {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+  margin-top: 30rpx;
+}
+
+.metric {
+  padding: 18rpx 8rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.16);
+  border-radius: 14rpx;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.metric-value {
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 800;
+  text-align: center;
+}
+
+.metric-label {
+  margin-top: 4rpx;
+  color: #cbeaf2;
+  font-size: 22rpx;
+  text-align: center;
+}
+
+.scenario-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.scenario-card {
+  position: relative;
+  padding: 24rpx;
+  border: 1rpx solid #dce7ef;
+  border-radius: 16rpx;
+  background: #ffffff;
+  box-shadow: 0 6rpx 18rpx rgba(15, 76, 117, 0.045);
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.scenario-card:active {
+  transform: scale(0.99);
+}
+
+.scenario-card.active {
+  border-color: #0b79a6;
+  background: #f1f9fc;
+  box-shadow: inset 6rpx 0 0 #0891b2;
+}
+
+.scenario-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.scenario-name {
+  color: #102a43;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.scenario-tag {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: #e1f3f8;
+  color: #0e7490;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.scenario-card.active .scenario-tag {
+  background: #d6f1ef;
+  color: #0f766e;
+}
+
+.scenario-desc {
+  margin-top: 12rpx;
+  color: #627d98;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.mode-label {
+  margin-bottom: 6rpx;
+}
+
+.plan-card {
+  padding: 26rpx;
+  border: 1rpx solid #a7d8d3;
+  border-radius: 16rpx;
+  background: linear-gradient(135deg, #eaf8f6 0%, #f7fcfc 100%);
+}
+
+.plan-title {
+  color: #0f766e;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.plan-line {
+  margin-top: 8rpx;
+  color: #134e4a;
+  font-size: 30rpx;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.plan-tip {
+  margin-top: 10rpx;
+  color: #486581;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
