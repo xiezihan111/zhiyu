@@ -1,5 +1,6 @@
 const app = typeof getApp === "function" ? getApp() : { globalData: { lastReport: null } };
 const { buildDemoReport } = require("../../utils/mock");
+const { trackEvent } = require("../../utils/analytics");
 
 Page({
   data: {
@@ -14,6 +15,9 @@ Page({
     });
     this.setData({
       report: app.globalData.lastReport || fallback
+    });
+    trackEvent("report_viewed", {
+      demoMode: Boolean(app.globalData.useDemoMode)
     });
   },
 

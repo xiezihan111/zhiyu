@@ -1,0 +1,146 @@
+[
+  {
+    "id": "pm-english-strong",
+    "scenario": "interview",
+    "role": "pm",
+    "difficulty": "strict",
+    "answer": "I led a checkout redesign by interviewing twelve users, prioritizing three friction points, and working with design and engineering. The completion rate improved by eight percent after launch.",
+    "expect": {
+      "containsChinese": false,
+      "normalizationNeeded": false,
+      "needsSpecificExample": false
+    }
+  },
+  {
+    "id": "pm-chinese-only",
+    "scenario": "interview",
+    "role": "pm",
+    "difficulty": "strict",
+    "answer": "我负责过一个新用户引导项目，先做了用户访谈，然后和设计、研发一起上线了第一版。",
+    "expect": {
+      "containsChinese": true,
+      "normalizationNeeded": true,
+      "needsSpecificExample": false
+    }
+  },
+  {
+    "id": "pm-mixed-language",
+    "scenario": "interview",
+    "role": "pm",
+    "difficulty": "advanced",
+    "answer": "I was responsible for 用户调研 and roadmap planning，然后推动团队在 two weeks 内上线 MVP.",
+    "expect": {
+      "containsChinese": true,
+      "normalizationNeeded": true,
+      "needsSpecificExample": false
+    }
+  },
+  {
+    "id": "pm-too-short",
+    "scenario": "interview",
+    "role": "pm",
+    "difficulty": "strict",
+    "answer": "I am responsible and hard-working.",
+    "expect": {
+      "containsChinese": false,
+      "normalizationNeeded": false,
+      "needsSpecificExample": true
+    }
+  },
+  {
+    "id": "pm-vague",
+    "scenario": "interview",
+    "role": "pm",
+    "difficulty": "strict",
+    "answer": "I did many product projects and the results were very good.",
+    "expect": {
+      "containsChinese": false,
+      "normalizationNeeded": false,
+      "needsSpecificExample": true
+    }
+  },
+  {
+    "id": "engineer-star",
+    "scenario": "interview",
+    "role": "engineer",
+    "difficulty": "advanced",
+    "answer": "Our API latency was affecting checkout. I profiled the slow queries, added an index, and introduced caching. P95 latency dropped from 1.8 seconds to 600 milliseconds.",
+    "expect": {
+      "containsChinese": false,
+      "normalizationNeeded": false,
+      "needsSpecificExample": false
+    }
+  },
+  {
+    "id": "engineer-grammar-heavy",
+    "scenario": "interview",
+    "role": "engineer",
+    "difficulty": "advanced",
+    "answer": "I have do backend three years and yesterday project I responsible API and make performance become better.",
+    "expect": {
+      "containsChinese": false,
+      "normalizationNeeded": false,
+      "needsSpecificExample": false
+    }
+  },
+  {
+    "id": "operations-meeting",
+    "scenario": "meeting",
+    "role": "operator",
+    "difficulty": "advanced",
+    "answer": "This week I completed the campaign setup. The main risk is delayed creative approval, so I need the design team to confirm the final assets before Thursday.",
+    "expect": {
+      "containsChinese": false,
+      "normalizationNeeded": false,
+      "needsSpecificExample": false
+    }
+  },
+  {
+    "id": "operations-mixed",
+    "scenario": "meeting",
+    "role": "operator",
+    "difficulty": "basic",
+    "answer": "The campaign is on schedule, 但是素材审批晚了一天, so we may need to move the launch to Friday.",
+    "expect": {
+      "containsChinese": true,
+      "normalizationNeeded": true,
+      "needsSpecificExample": false
+    }
+  },
+  {
+    "id": "sales-objection",
+    "scenario": "interview",
+    "role": "sales",
+    "difficulty": "strict",
+    "answer": "A client thought our price was too high. I clarified the cost of their current manual process, proposed a smaller pilot, and converted the pilot into an annual contract.",
+    "expect": {
+      "containsChinese": false,
+      "normalizationNeeded": false,
+      "needsSpecificExample": false
+    }
+  },
+  {
+    "id": "intro-basic",
+    "scenario": "intro",
+    "role": "pm",
+    "difficulty": "basic",
+    "answer": "My name is Amy. I have two years of product experience and I enjoy turning user problems into practical features.",
+    "expect": {
+      "containsChinese": false,
+      "normalizationNeeded": false,
+      "needsSpecificExample": false
+    }
+  },
+  {
+    "id": "intro-chinese-gap",
+    "scenario": "intro",
+    "role": "pm",
+    "difficulty": "basic",
+    "answer": "I have two years of product experience. 我不知道怎么说跨部门协作, but I often work with design and engineering teams.",
+    "expect": {
+      "containsChinese": true,
+      "normalizationNeeded": true,
+      "needsSpecificExample": false
+    }
+  }
+]

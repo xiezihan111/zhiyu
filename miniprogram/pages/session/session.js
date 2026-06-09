@@ -8,6 +8,7 @@ const {
   getRole,
   getDifficulty
 } = require("../../utils/mock");
+const { trackEvent } = require("../../utils/analytics");
 
 let recorder = null;
 let audioContext = null;
@@ -251,6 +252,11 @@ Page({
   },
 
   startRecorderNow() {
+    trackEvent("recording_started", {
+      scenario: this.data.config.scenario,
+      role: this.data.config.role,
+      demoMode: this.data.useDemoMode
+    });
     recorder.start({
       duration: 60000,
       sampleRate: 16000,
@@ -305,6 +311,11 @@ Page({
             audioContext.play();
           } else {
             this.setData({ isPlaying: false, playingMessageId: "" });
+            trackEvent("api_fallback", {
+              scenario: this.data.config.scenario,
+              role: this.data.config.role,
+              demoMode: this.data.useDemoMode
+            });
             if (res.statusCode === 401 || res.statusCode === 402 || res.statusCode === 429) {
               wx.showToast({ title: this.getApiErrorTitle(res.statusCode), icon: "none" });
               return;
@@ -314,6 +325,11 @@ Page({
         },
         fail: () => {
           this.setData({ isPlaying: false, playingMessageId: "" });
+          trackEvent("api_fallback", {
+            scenario: this.data.config.scenario,
+            role: this.data.config.role,
+            demoMode: this.data.useDemoMode
+          });
           wx.showToast({ title: "后端未连接", icon: "none" });
         }
       });
@@ -344,6 +360,11 @@ Page({
       success: (res) => {
         try {
           if (res.statusCode >= 400) {
+            trackEvent("api_fallback", {
+              scenario: this.data.config.scenario,
+              role: this.data.config.role,
+              demoMode: this.data.useDemoMode
+            });
             wx.showToast({ title: this.getApiErrorTitle(res.statusCode, "转文字失败"), icon: "none" });
             this.setData({ isLoading: false });
             return;
@@ -358,6 +379,11 @@ Page({
         }
       },
       fail: () => {
+        trackEvent("api_fallback", {
+          scenario: this.data.config.scenario,
+          role: this.data.config.role,
+          demoMode: this.data.useDemoMode
+        });
         wx.showToast({ title: "后端未连接", icon: "none" });
         this.setData({ isLoading: false });
       }
@@ -410,6 +436,11 @@ Page({
       success: (res) => {
         const data = res.data || {};
         if (res.statusCode >= 400 || !data.normalizedText) {
+          trackEvent("api_fallback", {
+            scenario: this.data.config.scenario,
+            role: this.data.config.role,
+            demoMode: this.data.useDemoMode
+          });
           callback(normalizeMixedAnswer(answer, this.data.config, this.data.userTurn + 1));
           return;
         }
@@ -420,6 +451,11 @@ Page({
         });
       },
       fail: () => {
+        trackEvent("api_fallback", {
+          scenario: this.data.config.scenario,
+          role: this.data.config.role,
+          demoMode: this.data.useDemoMode
+        });
         callback(normalizeMixedAnswer(answer, this.data.config, this.data.userTurn + 1));
       }
     });
@@ -429,6 +465,22 @@ Page({
     const answer = normalized.normalizedText || originalAnswer;
 
     const userTurn = this.data.userTurn + 1;
+    trackEvent("answer_submitted", {
+      scenario: this.data.config.scenario,
+      role: this.data.config.role,
+      demoMode: this.data.useDemoMode,
+      turn: userTurn,
+      mixedLanguage: Boolean(normalized.wasMixedLanguage)
+    });
+    if (normalized.wasMixedLanguage) {
+      trackEvent("mixed_language_used", {
+        scenario: this.data.config.scenario,
+        role: this.data.config.role,
+        demoMode: this.data.useDemoMode,
+        turn: userTurn,
+        mixedLanguage: true
+      });
+    }
     const progressPercent = Math.min(100, Math.round((userTurn / this.data.maxTurns) * 100));
     const userMessage = this.makeMessage("user", answer, "", "", {
       originalText: normalized.wasMixedLanguage ? originalAnswer : "",
@@ -468,6 +520,11 @@ Page({
       },
       success: (res) => {
         if (res.statusCode >= 400) {
+          trackEvent("api_fallback", {
+            scenario: this.data.config.scenario,
+            role: this.data.config.role,
+            demoMode: this.data.useDemoMode
+          });
           wx.showToast({ title: this.getApiErrorTitle(res.statusCode, "AI请求失败"), icon: "none" });
           this.setData({ isLoading: false });
           return;
@@ -480,6 +537,11 @@ Page({
         this.applyNextResult(res.data);
       },
       fail: () => {
+        trackEvent("api_fallback", {
+          scenario: this.data.config.scenario,
+          role: this.data.config.role,
+          demoMode: this.data.useDemoMode
+        });
         wx.showToast({ title: "后端未连接", icon: "none" });
         this.setData({ isLoading: false });
       }
@@ -522,6 +584,14 @@ Page({
   finishSession() {
     if (this.data.isFinishing) return;
 
+    trackEvent("practice_completed", {
+      scenario: this.data.config.scenario,
+      role: this.data.config.role,
+      difficulty: this.data.config.difficulty,
+      demoMode: this.data.useDemoMode,
+      turn: this.data.userTurn
+    });
+
     if (this.data.useDemoMode) {
       const report = buildDemoReport(this.data.history, this.data.config);
       app.globalData.lastReport = report;
@@ -538,10 +608,27 @@ Page({
         history: this.data.history
       },
       success: (res) => {
+        if (res.statusCode >= 400 || !res.data || !res.data.title || !Array.isArray(res.data.scores)) {
+          trackEvent("api_fallback", {
+            scenario: this.data.config.scenario,
+            role: this.data.config.role,
+            demoMode: this.data.useDemoMode
+          });
+          wx.showToast({
+            title: this.getApiErrorTitle(res.statusCode, "报告生成失败"),
+            icon: "none"
+          });
+          return;
+        }
         app.globalData.lastReport = res.data;
         wx.navigateTo({ url: "/pages/report/report" });
       },
       fail: () => {
+        trackEvent("api_fallback", {
+          scenario: this.data.config.scenario,
+          role: this.data.config.role,
+          demoMode: this.data.useDemoMode
+        });
         wx.showToast({ title: "报告生成失败", icon: "none" });
       },
       complete: () => {

@@ -1,4 +1,5 @@
 const app = typeof getApp === "function" ? getApp() : { globalData: { useDemoMode: true }, setDemoMode() {} };
+const { trackEvent } = require("../../utils/analytics");
 
 Page({
   data: {
@@ -75,11 +76,25 @@ Page({
     const value = event.detail.value;
     if (app.setVoiceEnabled) app.setVoiceEnabled(value);
     this.setData({ voiceEnabled: value });
+    if (value) {
+      trackEvent("voice_enabled", {
+        scenario: this.data.scenario,
+        role: this.data.role,
+        demoMode: this.data.useDemoMode,
+        voiceEnabled: true
+      });
+    }
   },
 
   startSession() {
     const { scenario, role, difficulty } = this.data;
     if (typeof wx === "undefined" || !wx.navigateTo) return;
+    trackEvent("practice_started", {
+      scenario,
+      role,
+      difficulty,
+      demoMode: this.data.useDemoMode
+    });
     wx.navigateTo({
       url: `/pages/session/session?scenario=${scenario}&role=${role}&difficulty=${difficulty}`
     });

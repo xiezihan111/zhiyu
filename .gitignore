@@ -11,6 +11,7 @@ server/node_modules/
 # Runtime files
 uploads/
 server/uploads/
+server/eval-results/*.json
 *.log
 *.mp3
 
@@ -23,4 +24,3 @@ miniprogram/project.private.config.json
 .idea/
 .DS_Store
 Thumbs.db
-

@@ -1,18 +1,70 @@
 import "dotenv/config";
+import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import cors from "cors";
 import express from "express";
 import multer from "multer";
 import OpenAI from "openai";
 import { fetch as undiciFetch, ProxyAgent, setGlobalDispatcher } from "undici";
 
-const app = express();
+export const app = express();
 const port = Number(process.env.PORT || 8787);
 const upload = multer({ dest: path.join(process.cwd(), "uploads") });
+const metrics = {
+  startedAt: new Date().toISOString(),
+  totalRequests: 0,
+  totalErrors: 0,
+  totalDurationMs: 0,
+  routes: {},
+  productEvents: {}
+};
+const allowedProductEvents = new Set([
+  "practice_started",
+  "answer_submitted",
+  "mixed_language_used",
+  "recording_started",
+  "practice_completed",
+  "report_viewed",
+  "voice_enabled",
+  "api_fallback"
+]);
 
 app.use(cors());
 app.use(express.json({ limit: "2mb" }));
+app.use((req, res, next) => {
+  const startedAt = Date.now();
+  const requestId = String(req.headers["x-request-id"] || randomUUID());
+  res.setHeader("X-Request-Id", requestId);
+
+  res.on("finish", () => {
+    const durationMs = Date.now() - startedAt;
+    const routePath = req.route?.path || req.path;
+    const routeKey = `${req.method} ${routePath}`;
+    const route = metrics.routes[routeKey] || {
+      requests: 0,
+      errors: 0,
+      totalDurationMs: 0,
+      maxDurationMs: 0
+    };
+
+    route.requests += 1;
+    route.totalDurationMs += durationMs;
+    route.maxDurationMs = Math.max(route.maxDurationMs, durationMs);
+    metrics.totalRequests += 1;
+    metrics.totalDurationMs += durationMs;
+
+    if (res.statusCode >= 400) {
+      route.errors += 1;
+      metrics.totalErrors += 1;
+    }
+
+    metrics.routes[routeKey] = route;
+  });
+
+  next();
+});
 
 const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || process.env.ALL_PROXY || "";
 const proxyDispatcher = proxyUrl ? new ProxyAgent(proxyUrl) : null;
@@ -21,7 +73,10 @@ if (proxyUrl) {
 }
 
 const openaiApiKey = String(process.env.OPENAI_API_KEY || "").trim();
-const hasOpenAIKey = Boolean(openaiApiKey && openaiApiKey !== "sk-your-key-here");
+const openaiDisabled = process.env.DISABLE_OPENAI === "true";
+const hasOpenAIKey = Boolean(
+  !openaiDisabled && openaiApiKey && openaiApiKey !== "sk-your-key-here"
+);
 const proxiedFetch = proxyDispatcher
   ? (url, init = {}) => undiciFetch(url, { ...init, dispatcher: proxyDispatcher })
   : undefined;
@@ -43,7 +98,7 @@ const speechInstructions =
     "Avoid exaggerated emotion, sales energy, breathiness, or casual podcast delivery."
   ].join(" ");
 
-function parseJson(raw, fallback) {
+export function parseJson(raw, fallback) {
   try {
     const cleaned = String(raw || "")
       .replace(/^```json\s*/i, "")
@@ -82,8 +137,39 @@ function scenarioName(scenario) {
   }[scenario] || "English job interview";
 }
 
-function containsChinese(text) {
+export function containsChinese(text) {
   return /[\u4e00-\u9fff]/.test(String(text || ""));
+}
+
+export function getMetricsSnapshot() {
+  const routes = Object.fromEntries(
+    Object.entries(metrics.routes).map(([key, value]) => [
+      key,
+      {
+        requests: value.requests,
+        errors: value.errors,
+        errorRate: value.requests ? Number((value.errors / value.requests).toFixed(4)) : 0,
+        averageDurationMs: value.requests
+          ? Number((value.totalDurationMs / value.requests).toFixed(1))
+          : 0,
+        maxDurationMs: value.maxDurationMs
+      }
+    ])
+  );
+
+  return {
+    startedAt: metrics.startedAt,
+    totalRequests: metrics.totalRequests,
+    totalErrors: metrics.totalErrors,
+    errorRate: metrics.totalRequests
+      ? Number((metrics.totalErrors / metrics.totalRequests).toFixed(4))
+      : 0,
+    averageDurationMs: metrics.totalRequests
+      ? Number((metrics.totalDurationMs / metrics.totalRequests).toFixed(1))
+      : 0,
+    routes,
+    productEvents: { ...metrics.productEvents }
+  };
 }
 
 function systemPrompt(config) {
@@ -105,6 +191,7 @@ app.get("/api/health", (req, res) => {
   res.json({
     ok: true,
     hasOpenAIKey: Boolean(client),
+    openaiDisabled,
     model,
     transcribeModel,
     speechModel,
@@ -113,16 +200,32 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.get("/api/metrics", (req, res) => {
+  res.json(getMetricsSnapshot());
+});
+
+app.post("/api/events", (req, res) => {
+  const eventName = String(req.body?.event || "");
+  if (!allowedProductEvents.has(eventName)) {
+    res.status(400).json({ error: "Unsupported event." });
+    return;
+  }
+
+  metrics.productEvents[eventName] = (metrics.productEvents[eventName] || 0) + 1;
+  res.status(202).json({ accepted: true });
+});
+
 app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
+  if (!req.file) {
+    res.status(400).json({ error: "No audio file uploaded." });
+    return;
+  }
+
   if (!client) {
     res.status(400).json({
       error: "OPENAI_API_KEY is missing. Please create server/.env first."
     });
-    return;
-  }
-
-  if (!req.file) {
-    res.status(400).json({ error: "No audio file uploaded." });
+    fs.unlink(req.file.path, () => {});
     return;
   }
 
@@ -144,16 +247,16 @@ app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
 });
 
 app.get("/api/speech", async (req, res) => {
+  const text = String(req.query.text || "").trim();
+  if (!text) {
+    res.status(400).json({ error: "Missing text." });
+    return;
+  }
+
   if (!client) {
     res.status(400).json({
       error: "OPENAI_API_KEY is missing. Demo mode uses built-in local audio."
     });
-    return;
-  }
-
-  const text = String(req.query.text || "").trim();
-  if (!text) {
-    res.status(400).json({ error: "Missing text." });
     return;
   }
 
@@ -253,6 +356,12 @@ app.post("/api/normalize-answer", async (req, res) => {
 });
 
 app.post("/api/interview/next", async (req, res) => {
+  const { config = {}, history = [], answer = "", userTurn = 1 } = req.body;
+  if (!String(answer || "").trim()) {
+    res.status(400).json({ error: "Missing answer." });
+    return;
+  }
+
   if (!client) {
     res.status(400).json({
       error: "OPENAI_API_KEY is missing. Turn on demo mode or configure server/.env."
@@ -260,7 +369,6 @@ app.post("/api/interview/next", async (req, res) => {
     return;
   }
 
-  const { config = {}, history = [], answer = "", userTurn = 1 } = req.body;
   const done = Number(userTurn) >= 3;
   const fallback = {
     feedback: "回答能表达基本意思。建议补充更具体的例子、量化结果和更自然的连接词。",
@@ -307,6 +415,12 @@ app.post("/api/interview/next", async (req, res) => {
 });
 
 app.post("/api/report", async (req, res) => {
+  const { config = {}, history = [] } = req.body;
+  if (!Array.isArray(history) || history.length === 0) {
+    res.status(400).json({ error: "History is required." });
+    return;
+  }
+
   if (!client) {
     res.status(400).json({
       error: "OPENAI_API_KEY is missing. Turn on demo mode or configure server/.env."
@@ -314,7 +428,6 @@ app.post("/api/report", async (req, res) => {
     return;
   }
 
-  const { config = {}, history = [] } = req.body;
   const fallback = {
     title: "英文面试陪练报告",
     summary: "你完成了一轮英语陪练。整体可以开口表达，但需要加强结构、例子和自然度。",
@@ -376,6 +489,11 @@ app.post("/api/report", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`ZhiYu Coach server is running at http://127.0.0.1:${port}`);
-});
+const isDirectRun =
+  process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isDirectRun) {
+  app.listen(port, () => {
+    console.log(`ZhiYu Coach server is running at http://127.0.0.1:${port}`);
+  });
+}

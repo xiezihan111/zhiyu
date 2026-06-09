@@ -20,6 +20,9 @@
 - `docs/MIXED_LANGUAGE_ASSIST.md`：中英混说辅助设计。
 - `docs/VOICE_DESIGN.md`：AI 考官声音与听力播音风格。
 - `docs/DESIGN_SYSTEM.md`：职场轻学习视觉系统与配色规范。
+- `docs/API_TESTING_GUIDE.md`：接口联调、自动测试和上线检查。
+- `docs/MEASUREMENT_PLAN.md`：产品埋点、AI 评测和用户验证指标。
+- `docs/RESUME_EVIDENCE.md`：可以写进简历的真实结果与证据边界。
 
 ## 第一版功能
 
